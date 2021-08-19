@@ -3,6 +3,12 @@ let practice = searchParams.get('q');
 // loadSwim(`/content/${practice}.json`);
 loadSwim('C:\\Users\\Kevin Long\\Documents\\GitHub\\swim-practice-formatter\\content\\2021-08-17.json');
 
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'p' && e.ctrlKey) {
+        window.print();
+    }
+})
+
 // Set the title
 function setTitle(title) {
     document.getElementById("title").innerText = title;
