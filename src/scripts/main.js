@@ -1,10 +1,18 @@
-let practice = 'C:\\Users\\Kevin Long\\Documents\\GitHub\\swim-practice-formatter\\content\\2021-08-17.json';
-// loadSwim(`/content/${practice}.json`);
-sessionStorage.getItem('file') ? loadSwim() : loadFromFile(practice);
+sessionStorage.getItem('file') && loadSwim();
 
 document.addEventListener('open', () => {
     let path = sessionStorage.getItem('path');
-    preLoad();
+    try {
+        preLoad();
+    } catch { };
+    loadFromFile(path);
+})
+
+document.addEventListener('new', () => {
+    let path = sessionStorage.getItem('path');
+    try {
+        preLoad();
+    } catch { };
     loadFromFile(path);
 })
 
@@ -26,7 +34,7 @@ document.addEventListener('keydown', (e) => {
         save();
     }
     if (e.ctrlKey && e.key === 'n') {
-        
+
     }
 })
 
@@ -256,13 +264,19 @@ function loadSwim() {
     let swim = JSON.parse(sessionStorage.getItem('file'));
 
     // Set the title
-    setTitle(swim.title);
+    try {
+        setTitle(swim.title);
+    } catch { }
 
     // Set the date
-    setDate(swim.date);
+    try {
+        setDate(swim.date);
+    } catch { }
 
     // Tags
-    setTags(swim.tags);
+    try {
+        setTags(swim.tags);
+    } catch { }
 
     // Set sections
     let total = 0;

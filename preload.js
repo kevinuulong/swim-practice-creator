@@ -7,16 +7,50 @@ window.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (e) => {
         if (e.ctrlKey && e.key === 's') save();
         if (e.ctrlKey && e.key === 'o') open();
+        if (e.ctrlKey && e.key === 'n') createNew();
     })
 })
 
 ipcRenderer.on('file', (event, data) => {
-    // This is not working right
-    const openEvent = new CustomEvent('open', { filePath: data[0] });
-    // console.log(data);
+    const openEvent = new Event('open');
     data && sessionStorage.setItem('path', data[0]);
     data && document.dispatchEvent(openEvent);
 })
+
+ipcRenderer.on('new', (event, data) => {
+    if (data) {
+        let fileContents = JSON.stringify({
+            version: 1,
+            date: getDate(),
+            title: "Untitled Practice",
+            measurement: "yds",
+            body: []
+        });
+        let filePath = data;
+        sessionStorage.setItem('path', filePath);
+        sessionStorage.setItem('file', fileContents);
+        fs.writeFileSync(filePath, fileContents);
+        const newEvent = new Event('new');
+        document.dispatchEvent(newEvent);
+    }
+
+
+})
+
+function getDate() {
+	const d = new Date();
+	let year = d.getFullYear();
+	let month = (d.getMonth() + 1).toLocaleString('en-US', {
+		minimumIntegerDigits: 2,
+		useGrouping: false
+	});
+	let day = d.getDate().toLocaleString('en-US', {
+		minimumIntegerDigits: 2,
+		useGrouping: false
+	});
+
+	return `${year}-${month}-${day}`;
+}
 
 function save() {
     let filePath = sessionStorage.getItem('path');
@@ -26,4 +60,8 @@ function save() {
 
 function open() {
     ipcRenderer.send('open');
+}
+
+function createNew() {
+    ipcRenderer.send('new');
 }

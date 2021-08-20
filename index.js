@@ -1,5 +1,6 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, ipcMain, dialog } = require('electron')
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { getDefaultSettings } = require('http2');
 const path = require('path')
 
 require('electron-reload')(__dirname);
@@ -31,12 +32,37 @@ ipcMain.on('open', () => {
 	mainWindow.webContents.send('file', src);
 })
 
+ipcMain.on('new', () => {
+	mainWindow.webContents.send('new', dialog.showSaveDialogSync({
+		defaultPath: getDate(),
+		filters: [{
+			name: "Swim Practice",
+			extensions: ["swim.json", "json"]
+		}]
+	}))
+})
+
+function getDate() {
+	const d = new Date();
+	let year = d.getFullYear();
+	let month = (d.getMonth() + 1).toLocaleString('en-US', {
+		minimumIntegerDigits: 2,
+		useGrouping: false
+	});
+	let day = d.getDate().toLocaleString('en-US', {
+		minimumIntegerDigits: 2,
+		useGrouping: false
+	});
+
+	return `${year}-${month}-${day}`;
+}
+
 function fromFile() {
 	return dialog.showOpenDialogSync({
 		properties: ['openFile'],
 		filters: [{
 			name: "Swim Practice",
-			extensions: ["json", "swim.json"]
+			extensions: ["swim.json", "json"]
 		}]
 	});
 }
