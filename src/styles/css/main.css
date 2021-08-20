@@ -33,10 +33,11 @@ html {
   font-family: "Poppins", sans-serif;
   margin: 0;
   height: 100%;
-  background-color: #F0F0F6;
+  background-color: #f0f0f6;
+  overflow: hidden;
 }
 
-body {
+#pageContainer {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -46,6 +47,9 @@ body {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
+  width: calc(100% - 360px);
+  height: 100%;
+  overflow: auto;
 }
 
 .page {
@@ -233,21 +237,104 @@ h2 {
 
 .selected::after {
   content: "";
-  width: calc( 100% + 36px);
-  height: calc( 100% + 18px);
+  width: calc(100% + 36px);
+  height: calc(100% + 18px);
   position: absolute;
   top: -9px;
   left: -18px;
   border-radius: 7px;
-  background-color: #F0F0F6;
+  background-color: #f0f0f6;
   -webkit-transform: translateZ(-1px);
           transform: translateZ(-1px);
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  color: #2f80ed;
+}
+
+.clickable:hover * {
+  color: #2f80ed !important;
+}
+
+.clickable:hover .number,
+.clickable:hover .tag {
+  background-color: #2f80ed;
+  color: white !important;
+}
+
+#sidebar {
+  width: calc(360px - 80px);
+  height: calc(100% - 80px);
+  background-color: #ffffff;
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 40px;
+}
+
+h3 {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 40px;
+  color: #000000;
+  margin: 0;
+}
+
+input[type=text], input[type=number] {
+  background-color: #f0f0f6;
+  width: calc(100% - 20px);
+  height: 40px;
+  border-radius: 5px;
+  border: none;
+  font-family: "Poppins", sans-serif;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  color: #000000;
+  margin-bottom: 10px;
+}
+
+input:focus {
+  outline: none;
+  -webkit-box-shadow: #2f80ed 0px 0px 0px 3px;
+          box-shadow: #2f80ed 0px 0px 0px 3px;
 }
 
 @media print {
   .page {
     -webkit-transform: scale(1.33);
             transform: scale(1.33);
+    display: block !important;
+  }
+  #pageContainer {
+    width: 100%;
+    height: 100%;
+  }
+  #sidebar {
+    display: none;
+  }
+  .selected::after {
+    content: none;
+  }
+  .clickable:hover {
+    color: #000000 !important;
+  }
+  .clickable:hover * {
+    color: #000000 !important;
+  }
+  .clickable:hover .number,
+  .clickable:hover .tag {
+    background-color: #b3b3b3;
+    color: #000000 !important;
   }
 }
 

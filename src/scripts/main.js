@@ -1,13 +1,77 @@
-const searchParams = new URLSearchParams(window.location.search);
-let practice = searchParams.get('q');
+let practice = 'C:\\Users\\Kevin Long\\Documents\\GitHub\\swim-practice-formatter\\content\\2021-08-17.json';
 // loadSwim(`/content/${practice}.json`);
-loadSwim('C:\\Users\\Kevin Long\\Documents\\GitHub\\swim-practice-formatter\\content\\2021-08-17.json');
+loadSwim(practice);
 
 document.addEventListener('keydown', (e) => {
     if (e.key === 'p' && e.ctrlKey) {
         window.print();
     }
 })
+
+function listeners() {
+    document.querySelectorAll(".clickable").forEach((element) => {
+        element.addEventListener('click', (e) => {
+            if (document.querySelector(".selected") != element) {
+                try {
+                    document.querySelector(".selected").classList.toggle('selected');
+                } catch { }
+                element.classList.toggle('selected');
+            } else {
+                document.querySelector(".selected").classList.toggle('selected');
+            }
+            loadOptions();
+        })
+    })
+}
+
+function loadOptions() {
+    document.getElementById("sidebar").textContent = null;
+    let selected = document.querySelector(".selected");
+    if (selected) {
+
+        if (selected.id === 'meta') {
+            createSidebarField('Title', 'text', document.getElementById("title").textContent);
+            createSidebarField('Date', 'text', document.getElementById("date").textContent);
+
+        }
+        if (selected.nodeName === 'H2') {
+            createSidebarField('Section Title', 'text', selected.textContent);
+        }
+
+        if (selected.classList.contains('exercise')) {
+            let numbers = selected.querySelector(".details").textContent.match(/\d+/g);
+            let stroke = selected.querySelector(".details").textContent.match(/[a-zA-Z]+/g)[1];
+            let repetitions = parseInt(numbers[0]);
+            let distance = parseInt(numbers[1]);
+            let description = selected.querySelector(".description").textContent;
+            createSidebarField('Repetitions', 'number', repetitions)
+            createSidebarField('Distance', 'number', distance);
+            createSidebarField('Stroke', 'text', stroke);
+            createSidebarField('Description', 'text', description);
+        }
+        unFocusListeners();
+    }
+
+}
+
+function unFocusListeners() {
+    document.querySelectorAll('input').forEach((elem) => {
+        elem.addEventListener('focusout', () => {
+            console.log(elem.value);
+        })
+    })
+}
+
+function createSidebarField(title, type, value = "") {
+    let titleElem = document.createElement('h3');
+    titleElem.textContent = title;
+    document.getElementById("sidebar").appendChild(titleElem);
+
+    let inputElem = document.createElement('input');
+    inputElem.type = type;
+    inputElem.value = value;
+    document.getElementById("sidebar").appendChild(inputElem);
+}
 
 // Set the title
 function setTitle(title) {
@@ -41,7 +105,7 @@ function createExercise(data) {
     let i = data.i;
 
     let exercise = document.createElement('div');
-    exercise.classList.add('exercise','clickable');
+    exercise.classList.add('exercise', 'clickable');
 
     let number = document.createElement('p');
     number.className = "number";
@@ -79,6 +143,10 @@ async function loadSwim(swim) {
     const content = await fetch(swim)
         .then(res => res.json())
         .then(res => {
+
+            // Store in the session storage before file save
+            sessionStorage.setItem('file', JSON.stringify(res));
+
             // Set the title
             setTitle(res.title);
 
@@ -116,5 +184,6 @@ async function loadSwim(swim) {
             totalDistance.textContent = `${total} ${res.measurement}.`;
 
             document.querySelector(".page").appendChild(totalDistance);
+            listeners();
         })
 }

@@ -6,13 +6,18 @@ html {
 	font-family: "Poppins", sans-serif;
 	margin: 0;
 	height: 100%;
-	background-color: #F0F0F6;
+	background-color: #f0f0f6;
+    overflow: hidden;
 }
 
-body {
+#pageContainer {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+
+	width: calc(100% - 360px);
+    height: 100%;
+    overflow: auto;
 }
 
 .page {
@@ -78,7 +83,7 @@ h1 {
 	margin-top: 7.5px;
 	margin-bottom: 7.5px;
 
-    -webkit-print-color-adjust: exact;
+	-webkit-print-color-adjust: exact;
 }
 
 #meta {
@@ -121,8 +126,8 @@ h2 {
 
 .exercise {
 	height: 36px;
-    position: relative;
-    margin-bottom: 9px;
+	position: relative;
+	margin-bottom: 9px;
 }
 
 .number {
@@ -146,10 +151,10 @@ h2 {
 	margin: 0;
 	margin-right: 7.5px;
 
-    position: absolute;
-    top: -1.5px;
+	position: absolute;
+	top: -1.5px;
 
-    -webkit-print-color-adjust: exact;
+	-webkit-print-color-adjust: exact;
 }
 
 .details {
@@ -165,9 +170,9 @@ h2 {
 	color: #000000;
 
 	margin: 0;
-    margin-left: 28.5px;
-    position: absolute;
-    top: 0;
+	margin-left: 28.5px;
+	position: absolute;
+	top: 0;
 }
 
 .description {
@@ -182,46 +187,139 @@ h2 {
 
 	color: #000000;
 
-    height: 18px;
-    width: 100%;
-    margin: 0;
-    margin-left: 28.5px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
+	height: 18px;
+	width: 100%;
+	margin: 0;
+	margin-left: 28.5px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
 }
 
 #total::before {
-    content: "Total:";
-    font-weight: 600;
-    margin-right: 18px;
+	content: "Total:";
+	font-weight: 600;
+	margin-right: 18px;
 }
 
 .selected {
-    position: relative;
-    transform-style: preserve-3d;
+	position: relative;
+	transform-style: preserve-3d;
 }
 
 .selected::after {
-    $offset: 9px;
-    content: "";
-    width: calc( 100% + #{ $offset * 4} );
-    height: calc( 100% + #{ $offset * 2} );
-    position: absolute;
-    top: -$offset;
-    left: -$offset * 2;
-    border-radius: 7px;
-    background-color: #F0F0F6;
-    transform: translateZ(-1px);
+	$offset: 9px;
+	content: "";
+	width: calc(100% + #{$offset * 4});
+	height: calc(100% + #{$offset * 2});
+	position: absolute;
+	top: -$offset;
+	left: -$offset * 2;
+	border-radius: 7px;
+	background-color: #f0f0f6;
+	transform: translateZ(-1px);
+}
+
+.clickable {
+	cursor: pointer;
+}
+
+.clickable:hover {
+	color: #2f80ed;
+
+	* {
+		color: #2f80ed !important;
+	}
+
+	.number,
+	.tag {
+		background-color: #2f80ed;
+		color: white !important;
+	}
+}
+
+#sidebar {
+	width: calc(360px - #{40px * 2});
+	height: calc(100% - #{40px * 2});
+	background-color: #ffffff;
+	position: absolute;
+	right: 0;
+    top: 0;
+	padding: 40px;
+}
+
+h3 {
+	font-family: Poppins;
+	font-style: normal;
+	font-weight: 600;
+	font-size: 18px;
+	line-height: 40px;
+
+	color: #000000;
+
+	margin: 0;
+}
+
+input[type=text], input[type=number] {
+	background-color: #f0f0f6;
+	width: calc(100% - #{10px * 2});
+	height: 40px;
+	border-radius: 5px;
+	border: none;
+	font-family: "Poppins", sans-serif;
+	padding-left: 10px;
+	padding-right: 10px;
+
+	font-style: normal;
+	font-weight: normal;
+	font-size: 16px;
+	line-height: 24px;
+
+	color: #000000;
+
+    margin-bottom: 10px;
+}
+
+input:focus {
+    outline: none;
+    box-shadow: #2f80ed 0px 0px 0px 3px;
 }
 
 @media print {
-    .page {
-        transform: scale(1.33);
+	.page {
+		transform: scale(1.33);
+        display: block !important;
+	}
+
+    #pageContainer {
+        width: 100%;
+        height: 100%;
     }
+
+    #sidebar {
+        display: none;
+    }
+
+	.selected::after {
+		content: none;
+	}
+
+	.clickable:hover {
+		color: #000000 !important;
+
+		* {
+			color: #000000 !important;
+		}
+
+		.number,
+		.tag {
+			background-color: #b3b3b3;
+			color: #000000 !important;
+		}
+	}
 }
 
 @page {
-    size: portrait;
-    margin: 0;
+	size: portrait;
+	margin: 0;
 }
