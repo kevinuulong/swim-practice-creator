@@ -2,12 +2,14 @@ let practice = 'C:\\Users\\Kevin Long\\Documents\\GitHub\\swim-practice-formatte
 // loadSwim(`/content/${practice}.json`);
 sessionStorage.getItem('file') ? loadSwim() : loadFromFile(practice);
 
-if (sessionStorage.getItem('selection') === 'true') {
-    let x = sessionStorage.getItem('x');
-    let y = sessionStorage.getItem('y');
-    document.elementFromPoint(x, y).click();
-    sessionStorage.setItem('x', x);
-    sessionStorage.setItem('y', y);
+function select() {
+    if (sessionStorage.getItem('selection') === 'true') {
+        let x = sessionStorage.getItem('x');
+        let y = sessionStorage.getItem('y');
+        document.elementFromPoint(x, y).click();
+        sessionStorage.setItem('x', x);
+        sessionStorage.setItem('y', y);
+    }
 }
 
 document.addEventListener('keydown', (e) => {
@@ -23,7 +25,13 @@ function save() {
     document.activeElement.blur();
     if (document.querySelector('.selected')) sessionStorage.setItem('selection', true);
     else sessionStorage.setItem('selection', false);
-    location.reload();
+    document.getElementById("body").textContent = null;
+    document.getElementById("total").remove();
+    document.querySelectorAll('.tag').forEach((tag) => {
+        tag.remove();
+    })
+    loadSwim();
+    select();
 }
 
 function listeners() {
@@ -107,6 +115,31 @@ function unFocusListeners() {
                 }
                 if (elem.title === 'Tags') {
                     data.tags = elem.value.split(/, /);
+                }
+            }
+
+            if (document.querySelector('.selected').classList.contains('exercise')) {
+                let h2 = document.querySelector('.selected').previousElementSibling;
+                let depth = -1;
+                while (h2.nodeName != 'H2') {
+                    h2 = h2.previousElementSibling;
+                    depth++;
+                }
+                let index = Array.prototype.indexOf.call(document.querySelectorAll('h2'), h2);
+                let section = data.body[index][h2.textContent];
+                let exercise = section[depth];
+
+                if (elem.title === 'Repetitions') {
+                    exercise.repetitions = elem.value;
+                }
+                if (elem.title === 'Distance') {
+                    exercise.distance = elem.value;
+                }
+                if (elem.title === 'Stroke') {
+                    exercise.stroke = elem.value;
+                }
+                if (elem.title === 'Description') {
+                    exercise.description = elem.value;
                 }
             }
 
