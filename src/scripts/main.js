@@ -2,6 +2,12 @@ let practice = 'C:\\Users\\Kevin Long\\Documents\\GitHub\\swim-practice-formatte
 // loadSwim(`/content/${practice}.json`);
 sessionStorage.getItem('file') ? loadSwim() : loadFromFile(practice);
 
+document.addEventListener('open', () => {
+    let path = sessionStorage.getItem('path');
+    preLoad();
+    loadFromFile(path);
+})
+
 function select() {
     if (sessionStorage.getItem('selection') === 'true') {
         let x = sessionStorage.getItem('x');
@@ -19,17 +25,24 @@ document.addEventListener('keydown', (e) => {
     if (e.ctrlKey && e.key === 's') {
         save();
     }
+    if (e.ctrlKey && e.key === 'n') {
+        
+    }
 })
 
-function save() {
-    document.activeElement.blur();
-    if (document.querySelector('.selected')) sessionStorage.setItem('selection', true);
-    else sessionStorage.setItem('selection', false);
+function preLoad() {
     document.getElementById("body").textContent = null;
     document.getElementById("total").remove();
     document.querySelectorAll('.tag').forEach((tag) => {
         tag.remove();
     })
+}
+
+function save() {
+    document.activeElement.blur();
+    if (document.querySelector('.selected')) sessionStorage.setItem('selection', true);
+    else sessionStorage.setItem('selection', false);
+    preLoad();
     loadSwim();
     select();
 }
@@ -229,6 +242,7 @@ function createSection(sectionTitle) {
 }
 
 async function loadFromFile(file) {
+    sessionStorage.setItem('path', file);
     const content = await fetch(file)
         .then(res => res.json())
         .then(res => {
