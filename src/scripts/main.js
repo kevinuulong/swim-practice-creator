@@ -1,16 +1,36 @@
 let practice = 'C:\\Users\\Kevin Long\\Documents\\GitHub\\swim-practice-formatter\\content\\2021-08-17.json';
 // loadSwim(`/content/${practice}.json`);
-loadSwim(practice);
+sessionStorage.getItem('file') ? loadSwim() : loadFromFile(practice);
+
+if (sessionStorage.getItem('selection') === 'true') {
+    let x = sessionStorage.getItem('x');
+    let y = sessionStorage.getItem('y');
+    document.elementFromPoint(x, y).click();
+    sessionStorage.setItem('x', x);
+    sessionStorage.setItem('y', y);
+}
 
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'p' && e.ctrlKey) {
+    if (e.ctrlKey && e.key === 'p') {
         window.print();
     }
+    if (e.ctrlKey && e.key === 's') {
+        save();
+    }
 })
+
+function save() {
+    document.activeElement.blur();
+    if (document.querySelector('.selected')) sessionStorage.setItem('selection', true);
+    else sessionStorage.setItem('selection', false);
+    location.reload();
+}
 
 function listeners() {
     document.querySelectorAll(".clickable").forEach((element) => {
         element.addEventListener('click', (e) => {
+            sessionStorage.setItem('x', e.pageX);
+            sessionStorage.setItem('y', e.pageY);
             if (document.querySelector(".selected") != element) {
                 try {
                     document.querySelector(".selected").classList.toggle('selected');
@@ -18,6 +38,7 @@ function listeners() {
                 element.classList.toggle('selected');
             } else {
                 document.querySelector(".selected").classList.toggle('selected');
+                sessionStorage.setItem('selection', false);
             }
             loadOptions();
         })
@@ -32,6 +53,11 @@ function loadOptions() {
         if (selected.id === 'meta') {
             createSidebarField('Title', 'text', document.getElementById("title").textContent);
             createSidebarField('Date', 'text', document.getElementById("date").textContent);
+            let tags = '';
+            document.querySelectorAll('.tag').forEach((tag) => {
+                tags += tags === '' ? tag.textContent : `, ${tag.textContent}`;
+            })
+            createSidebarField('Tags', 'text', tags)
 
         }
         if (selected.nodeName === 'H2') {
@@ -57,7 +83,35 @@ function loadOptions() {
 function unFocusListeners() {
     document.querySelectorAll('input').forEach((elem) => {
         elem.addEventListener('focusout', () => {
-            console.log(elem.value);
+            let data = JSON.parse(sessionStorage.getItem('file'));
+
+            if (document.querySelector('.selected').nodeName === 'H2') {
+                let i = 0;
+                let selected;
+                document.querySelectorAll('h2').forEach((h2) => {
+                    if (h2.classList.contains('selected')) selected = i;
+                    i++;
+                })
+                if (elem.dataset.prev != elem.value) {
+                    data.body[selected][elem.value] = data.body[selected][elem.dataset.prev];
+                    delete data.body[selected][elem.dataset.prev];
+                }
+            }
+
+            if (document.querySelector('.selected').id === 'meta') {
+                if (elem.title === 'Title') {
+                    data.title = elem.value;
+                }
+                if (elem.title === 'Date') {
+                    data.date = elem.value.replace(/\//g, '-');
+                }
+                if (elem.title === 'Tags') {
+                    data.tags = elem.value.split(/, /);
+                }
+            }
+
+            sessionStorage.setItem('file', JSON.stringify(data));
+            save();
         })
     })
 }
@@ -70,6 +124,8 @@ function createSidebarField(title, type, value = "") {
     let inputElem = document.createElement('input');
     inputElem.type = type;
     inputElem.value = value;
+    inputElem.dataset.prev = value;
+    inputElem.title = title;
     document.getElementById("sidebar").appendChild(inputElem);
 }
 
@@ -139,51 +195,55 @@ function createSection(sectionTitle) {
     document.getElementById("body").appendChild(distance);
 }
 
-async function loadSwim(swim) {
-    const content = await fetch(swim)
+async function loadFromFile(file) {
+    const content = await fetch(file)
         .then(res => res.json())
         .then(res => {
-
-            // Store in the session storage before file save
+            // Store in the session storage
             sessionStorage.setItem('file', JSON.stringify(res));
+            loadSwim();
+        });
+}
 
-            // Set the title
-            setTitle(res.title);
+function loadSwim() {
+    let swim = JSON.parse(sessionStorage.getItem('file'));
 
-            // Set the date
-            setDate(res.date);
+    // Set the title
+    setTitle(swim.title);
 
-            // Tags
-            setTags(res.tags);
+    // Set the date
+    setDate(swim.date);
 
-            // Set sections
-            let total = 0;
-            res.body.forEach(section => {
-                let sectionTitle = Object.keys(section)[0];
-                createSection(sectionTitle);
+    // Tags
+    setTags(swim.tags);
 
-                let sectionTotal = 0;
+    // Set sections
+    let total = 0;
+    swim.body.forEach(section => {
+        let sectionTitle = Object.keys(section)[0];
+        createSection(sectionTitle);
 
-                // Create exercises
-                let i = 1;
-                section[sectionTitle].forEach(data => {
-                    data.i = i;
-                    sectionTotal += createExercise(data);
-                    i++;
-                })
+        let sectionTotal = 0;
 
-                let distances = document.querySelectorAll(".distance:not(#total)")
-                distances[distances.length - 1].textContent = `${sectionTotal} ${res.measurement}.`;
-                total += sectionTotal;
-            })
-
-            // Compute total distance
-            let totalDistance = document.createElement('p');
-            totalDistance.className = "distance";
-            totalDistance.id = "total";
-            totalDistance.textContent = `${total} ${res.measurement}.`;
-
-            document.querySelector(".page").appendChild(totalDistance);
-            listeners();
+        // Create exercises
+        let i = 1;
+        section[sectionTitle].forEach(data => {
+            data.i = i;
+            sectionTotal += createExercise(data);
+            i++;
         })
+
+        let distances = document.querySelectorAll(".distance:not(#total)")
+        distances[distances.length - 1].textContent = `${sectionTotal} ${swim.measurement}.`;
+        total += sectionTotal;
+    })
+
+    // Compute total distance
+    let totalDistance = document.createElement('p');
+    totalDistance.className = "distance";
+    totalDistance.id = "total";
+    totalDistance.textContent = `${total} ${swim.measurement}.`;
+
+    document.querySelector(".page").appendChild(totalDistance);
+    listeners();
 }
