@@ -170,6 +170,78 @@ function unFocusListeners() {
     })
 }
 
+function addSection() {
+    let fileContents = JSON.parse(sessionStorage.getItem('file'));
+    let position = fileContents.body;
+    if (!document.querySelector('.selected')) {
+        position.push({ "Untitled Section": [] });
+    } else {
+        let i = 0;
+        let selected;
+        document.querySelectorAll('h2').forEach((h2) => {
+            if (h2.classList.contains('selected')) selected = i;
+            i++;
+        })
+        position.splice(selected + 1, 0, { "Untitled Section": [] });
+    }
+
+    console.log(fileContents);
+    sessionStorage.setItem('file', JSON.stringify(fileContents));
+    saveFile();
+}
+
+// Does not like to work if adding to a section that already has an exercise
+// Need to fix this issue
+function addExercise() {
+    let fileContents = JSON.parse(sessionStorage.getItem('file'));
+    let position = fileContents.body;
+
+    let h2;
+    let depth;
+    if (document.querySelector('.selected')) {
+        if (document.querySelector('.selected').nodeName != 'H2') {
+            depth = -1;
+            h2 = document.querySelector('.selected').previousElementSibling;
+            while (h2.nodeName != 'H2') {
+                h2 = h2.previousElementSibling;
+                depth++;
+            }
+        } else {
+            h2 = document.querySelector('.selected');
+            depth = 0;
+        }
+    } else {
+        let h2s = document.querySelectorAll('h2');
+        h2 = h2s[h2s.length - 1];
+        depth = -1;
+        let j = h2.nextElementSibling.nextElementSibling;
+        if (!j) depth = 0;
+        while (j && j.classList.contains('exercise')) {
+            j.nextElementSibling;
+            depth++;
+        }
+
+    }
+    let index = Array.prototype.indexOf.call(document.querySelectorAll('h2'), h2);
+    let section = fileContents.body[index][h2.textContent];
+    console.log(section, depth);
+    section[depth] = {
+        repetitions: 1,
+        distance: 100,
+        stroke: "",
+        description: "",
+        cycle: null
+    }
+
+    console.log(fileContents);
+    sessionStorage.setItem('file', JSON.stringify(fileContents));
+    saveFile();
+}
+
+function saveFile() {
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 's', ctrlKey: true }));
+}
+
 function createSidebarField(title, type, value = "") {
     let titleElem = document.createElement('h3');
     titleElem.textContent = title;
