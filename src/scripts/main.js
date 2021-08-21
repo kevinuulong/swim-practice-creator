@@ -136,6 +136,7 @@ function unFocusListeners() {
                 }
                 if (elem.title === 'Tags') {
                     data.tags = elem.value.split(/, /);
+                    if (elem.value.replace(/\s/g, '') === "") delete data.tags;
                 }
             }
 
@@ -178,11 +179,36 @@ function addSection() {
     } else {
         let i = 0;
         let selected;
+        let moved;
+
+        if (document.querySelector('.selected').classList.contains('exercise')) {
+            let depth = -1;
+            let h2 = document.querySelector('.selected').previousElementSibling;
+            while (h2.nodeName != 'H2') {
+                h2 = h2.previousElementSibling;
+                depth++;
+            }
+            let index = Array.prototype.indexOf.call(document.querySelectorAll('h2'), h2);
+            let section = fileContents.body[index][h2.textContent];
+            moved = section.splice(depth + 1);
+            console.log(depth);
+            console.log(moved);
+            selected = depth;
+        }
+
         document.querySelectorAll('h2').forEach((h2) => {
             if (h2.classList.contains('selected')) selected = i;
             i++;
         })
-        position.splice(selected + 1, 0, { "Untitled Section": [] });
+        // if (!selected) {
+
+        // }
+        console.log(i, selected);
+        if (moved) {
+            position.splice(selected + 1, 0, { "Untitled Section": moved });
+        } else {
+            position.splice(selected + 1, 0, { "Untitled Section": [] });
+        }
     }
 
     console.log(fileContents);
@@ -194,7 +220,8 @@ function addSection() {
 // Need to fix this issue
 function addExercise() {
     let fileContents = JSON.parse(sessionStorage.getItem('file'));
-    let position = fileContents.body;
+
+    if (!document.querySelector('h2')) return;
 
     let h2;
     let depth;
@@ -208,32 +235,30 @@ function addExercise() {
             }
         } else {
             h2 = document.querySelector('.selected');
-            depth = 0;
         }
     } else {
         let h2s = document.querySelectorAll('h2');
+        console.log(h2s);
         h2 = h2s[h2s.length - 1];
-        depth = -1;
+        depth = 0;
         let j = h2.nextElementSibling.nextElementSibling;
-        if (!j) depth = 0;
         while (j && j.classList.contains('exercise')) {
-            j.nextElementSibling;
+            j = j.nextElementSibling;
             depth++;
         }
+        console.log(depth);
 
     }
     let index = Array.prototype.indexOf.call(document.querySelectorAll('h2'), h2);
     let section = fileContents.body[index][h2.textContent];
-    console.log(section, depth);
-    section[depth] = {
+    section.splice(depth + 1, 0, {
         repetitions: 1,
         distance: 100,
         stroke: "",
         description: "",
         cycle: null
-    }
+    });
 
-    console.log(fileContents);
     sessionStorage.setItem('file', JSON.stringify(fileContents));
     saveFile();
 }
