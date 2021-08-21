@@ -200,9 +200,6 @@ function addSection() {
             if (h2.classList.contains('selected')) selected = i;
             i++;
         })
-        // if (!selected) {
-
-        // }
         console.log(i, selected);
         if (moved) {
             position.splice(selected + 1, 0, { "Untitled Section": moved });
