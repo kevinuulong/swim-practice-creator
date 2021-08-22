@@ -213,8 +213,6 @@ function addSection() {
     saveFile();
 }
 
-// Does not like to work if adding to a section that already has an exercise
-// Need to fix this issue
 function addExercise() {
     let fileContents = JSON.parse(sessionStorage.getItem('file'));
 
