@@ -33,8 +33,11 @@ document.addEventListener('keydown', (e) => {
     if (e.ctrlKey && e.key === 's') {
         save();
     }
-    if (e.ctrlKey && e.key === 'n') {
-
+    if (document.activeElement.nodeName != 'INPUT' && !e.ctrlKey && e.key === 's') {
+        addSection();
+    }
+    if (document.activeElement.nodeName != 'INPUT' && !e.ctrlKey && e.key === 'x') {
+        addExercise();
     }
 })
 
