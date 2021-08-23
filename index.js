@@ -1,9 +1,10 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
-const { getDefaultSettings } = require('http2');
 const path = require('path')
 
-require('electron-reload')(__dirname);
+try {
+	require('electron-reload')(__dirname);
+} catch { }
 
 let mainWindow;
 
@@ -28,7 +29,7 @@ function createWindow() {
 
 ipcMain.on('open', () => {
 	let src = process.argv[1];
-	if (!src.includes('.json')) src = fromFile();
+	if (src || !src.includes('.json')) src = fromFile();
 	mainWindow.webContents.send('file', src);
 })
 
