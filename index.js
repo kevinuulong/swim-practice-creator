@@ -29,7 +29,7 @@ function createWindow() {
 
 ipcMain.on('open', () => {
 	let src = process.argv[1];
-	if (src || !src.includes('.json')) src = fromFile();
+	if (!src || !src.includes('.json')) src = fromFile();
 	mainWindow.webContents.send('file', src);
 })
 
