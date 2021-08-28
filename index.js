@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, Menu } = require('electron');
 const path = require('path')
 
 try {
@@ -26,6 +26,58 @@ function createWindow() {
 	// Open the DevTools.
 	// mainWindow.webContents.openDevTools()
 }
+let menuTemplate = [{
+	label: "File",
+	submenu: [
+		{
+			label: "Open",
+			click() {
+				let src = process.argv[1];
+				if (!src || !src.includes('.json')) src = fromFile();
+				mainWindow.webContents.send('file', src);
+			}
+		},
+		{
+			label: "New",
+			click() {
+				mainWindow.webContents.send('new', dialog.showSaveDialogSync({
+					defaultPath: getDate(),
+					filters: [{
+						name: "Swim Practice",
+						extensions: ["swim.json", "json"]
+					}]
+				}))
+			}
+		},
+		{
+			label: "Print",
+			click() {
+				mainWindow.webContents.send('print');
+			}
+		},
+		{
+			role: 'reload'
+		}
+	]
+},
+{
+	label: "Add Section",
+	click() {
+		mainWindow.webContents.send('newSection');
+	}
+},
+{
+	label: "Add Exercise",
+	click() {
+		mainWindow.webContents.send('newExercise');
+	}
+},
+{
+	role: 'toggleDevTools'
+}]
+
+const menu = Menu.buildFromTemplate(menuTemplate);
+Menu.setApplicationMenu(menu);
 
 ipcMain.on('open', () => {
 	let src = process.argv[1];

@@ -37,6 +37,25 @@ ipcRenderer.on('new', (event, data) => {
 
 })
 
+ipcRenderer.on('print', () => {
+    document.dispatchEvent(new KeyboardEvent('keydown', {
+        key: 'p',
+        ctrlKey: true
+    }))
+})
+
+ipcRenderer.on('newSection', () => {
+    document.dispatchEvent(new KeyboardEvent('keydown', {
+        key: 's'
+    }))
+})
+
+ipcRenderer.on('newExercise', () => {
+    document.dispatchEvent(new KeyboardEvent('keydown', {
+        key: 'x'
+    }))
+})
+
 function getDate() {
 	const d = new Date();
 	let year = d.getFullYear();
