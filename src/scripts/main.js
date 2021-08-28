@@ -194,8 +194,6 @@ function addSection() {
             let index = Array.prototype.indexOf.call(document.querySelectorAll('h2'), h2);
             let section = fileContents.body[index][h2.textContent];
             moved = section.splice(depth + 1);
-            console.log(depth);
-            console.log(moved);
             selected = depth;
         }
 
@@ -203,7 +201,6 @@ function addSection() {
             if (h2.classList.contains('selected')) selected = i;
             i++;
         })
-        console.log(i, selected);
         if (moved) {
             position.splice(selected + 1, 0, { "Untitled Section": moved });
         } else {
@@ -211,7 +208,6 @@ function addSection() {
         }
     }
 
-    console.log(fileContents);
     sessionStorage.setItem('file', JSON.stringify(fileContents));
     saveFile();
 }
@@ -236,7 +232,6 @@ function addExercise() {
         }
     } else {
         let h2s = document.querySelectorAll('h2');
-        console.log(h2s);
         h2 = h2s[h2s.length - 1];
         depth = 0;
         let j = h2.nextElementSibling.nextElementSibling;
@@ -244,7 +239,6 @@ function addExercise() {
             j = j.nextElementSibling;
             depth++;
         }
-        console.log(depth);
 
     }
     let index = Array.prototype.indexOf.call(document.querySelectorAll('h2'), h2);
