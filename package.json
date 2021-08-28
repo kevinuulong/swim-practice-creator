@@ -1,27 +1,32 @@
 {
-  "name": "swim-practice-creator",
-  "version": "1.0.0-pre",
-  "description": "Swim practice creator.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron .",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/kevinuulong/swim-practice-creator.git"
-  },
-  "author": "Kevin Long <kevinuulong@gmail.com> (https://kevinuulong.com/)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/kevinuulong/swim-practice-creator/issues"
-  },
-  "homepage": "https://github.com/kevinuulong/swim-practice-creator#readme",
-  "devDependencies": {
-    "electron": "^13.2.1",
-    "electron-builder": "^22.11.7",
-    "electron-reload": "^2.0.0-alpha.1"
-  }
+	"name": "swim-practice-creator",
+	"productName": "Swim Practice Creator",
+	"version": "1.0.0-pre",
+	"description": "Swim practice creator.",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "electron .",
+		"pack": "electron-builder --dir",
+		"dist": "electron-builder",
+		"build": "electron-builder build -w"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/kevinuulong/swim-practice-creator.git"
+	},
+	"author": "Kevin Long <kevinuulong@gmail.com> (https://kevinuulong.com/)",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/kevinuulong/swim-practice-creator/issues"
+	},
+	"homepage": "https://github.com/kevinuulong/swim-practice-creator#readme",
+	"build": {
+		"appId": "com.kevinuulong.swim-practice-formatter"
+	},
+	"devDependencies": {
+		"electron": "^13.2.1",
+		"electron-builder": "^22.11.7",
+		"electron-reload": "^2.0.0-alpha.1"
+	}
 }
