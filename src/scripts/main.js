@@ -39,6 +39,9 @@ document.addEventListener('keydown', (e) => {
     if (document.activeElement.nodeName != 'INPUT' && !e.ctrlKey && e.key === 'x') {
         addExercise();
     }
+    if (document.activeElement.nodeName != 'INPUT' && !e.ctrlKey && (e.key === 'Delete' || e.key === 'Backspace')) {
+        remove();
+    }
 })
 
 function preLoad() {
@@ -250,6 +253,34 @@ function addExercise() {
         description: "",
         cycle: null
     });
+
+    sessionStorage.setItem('file', JSON.stringify(fileContents));
+    saveFile();
+}
+
+function remove() {
+    let fileContents = JSON.parse(sessionStorage.getItem('file'));
+
+    let selected = document.querySelector('.selected');
+    if (!selected) return;
+
+    if (selected.nodeName === 'H2') {
+        let index = Array.prototype.indexOf.call(document.querySelectorAll('h2'), selected);
+        fileContents.body.splice(index, 1);
+    }
+
+    if (selected.classList.contains('exercise')) {
+        let h2;
+        let depth;
+        depth = -1;
+        h2 = selected.previousElementSibling;
+        while (h2.nodeName != 'H2') {
+            h2 = h2.previousElementSibling;
+            depth++;
+        }
+        let index = Array.prototype.indexOf.call(document.querySelectorAll('h2'), h2);
+        fileContents.body[index][h2.textContent].splice(depth, 1);
+    }
 
     sessionStorage.setItem('file', JSON.stringify(fileContents));
     saveFile();

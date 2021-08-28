@@ -61,16 +61,38 @@ let menuTemplate = [{
 	]
 },
 {
-	label: "Add Section",
-	click() {
-		mainWindow.webContents.send('newSection');
-	}
+	label: "Section",
+	submenu: [
+		{
+			label: "Add",
+			click() {
+				mainWindow.webContents.send('newSection');
+			}
+		},
+		{
+			label: "Delete",
+			click() {
+				mainWindow.webContents.send('delete');
+			}
+		}
+	]
 },
 {
-	label: "Add Exercise",
-	click() {
-		mainWindow.webContents.send('newExercise');
-	}
+	label: "Exercise",
+	submenu: [
+		{
+			label: "Add",
+			click() {
+				mainWindow.webContents.send('newExercise');
+			}
+		},
+		{
+			label: "Delete",
+			click() {
+				mainWindow.webContents.send('delete');
+			}
+		}
+	]
 },
 {
 	role: 'toggleDevTools'

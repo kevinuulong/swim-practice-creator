@@ -56,6 +56,12 @@ ipcRenderer.on('newExercise', () => {
     }))
 })
 
+ipcRenderer.on('delete', () => {
+    document.dispatchEvent(new KeyboardEvent('keydown', {
+        key: 'Delete'
+    }))
+})
+
 function getDate() {
 	const d = new Date();
 	let year = d.getFullYear();
