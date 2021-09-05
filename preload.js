@@ -9,6 +9,7 @@ window.addEventListener('DOMContentLoaded', () => {
         if (e.ctrlKey && e.key === 'o') open();
         if (e.ctrlKey && e.key === 'n') createNew();
     })
+    ipcRenderer.send('zoom');
 })
 
 ipcRenderer.on('file', (event, data) => {
@@ -60,6 +61,10 @@ ipcRenderer.on('delete', () => {
     document.dispatchEvent(new KeyboardEvent('keydown', {
         key: 'Delete'
     }))
+})
+
+ipcRenderer.on('zoom', (event, data) => {
+    document.querySelector(".page").style.zoom = 1 / data;
 })
 
 function getDate() {

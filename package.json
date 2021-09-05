@@ -1,7 +1,7 @@
 {
 	"name": "swim-practice-creator",
 	"productName": "Swim Practice Creator",
-	"version": "1.0.1-pre",
+	"version": "1.0.2-pre",
 	"description": "Swim practice creator.",
 	"main": "index.js",
 	"scripts": {
@@ -22,7 +22,7 @@
 	},
 	"homepage": "https://github.com/kevinuulong/swim-practice-creator#readme",
 	"build": {
-		"appId": "com.kevinuulong.swim-practice-formatter"
+		"appId": "com.kevinuulong.swim-practice-creator"
 	},
 	"devDependencies": {
 		"electron": "^13.2.1",

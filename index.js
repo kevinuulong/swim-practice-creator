@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, ipcMain, dialog, Menu } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, Menu, screen } = require('electron');
 const path = require('path')
 
 try {
@@ -11,10 +11,11 @@ let mainWindow;
 function createWindow() {
 	// Create the browser window.
 	mainWindow = new BrowserWindow({
-		width: 1500,
-		minWidth: 1040,
-		height: 912,
-		minHeight: 912,
+		width: 1040,
+		minWidth: 800,
+		height: 750,
+		minHeight: 600,
+		icon: 'build/icon.png',
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js')
 		}
@@ -26,6 +27,7 @@ function createWindow() {
 	// Open the DevTools.
 	// mainWindow.webContents.openDevTools()
 }
+
 let menuTemplate = [{
 	label: "File",
 	submenu: [
@@ -117,6 +119,14 @@ ipcMain.on('new', () => {
 	}))
 })
 
+ipcMain.on('zoom', () => {
+	calcZoom()
+})
+
+function calcZoom() {
+	mainWindow.webContents.send('zoom', screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).scaleFactor);
+}
+
 function getDate() {
 	const d = new Date();
 	let year = d.getFullYear();
@@ -152,6 +162,10 @@ app.whenReady().then(() => {
 		// On macOS it's common to re-create a window in the app when the
 		// dock icon is clicked and there are no other windows open.
 		if (BrowserWindow.getAllWindows().length === 0) createWindow()
+	})
+
+	mainWindow.on('resize', () => {
+		calcZoom();
 	})
 })
 
